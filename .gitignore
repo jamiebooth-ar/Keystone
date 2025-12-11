@@ -59,3 +59,7 @@ postgres_data/
 .venv/
 
 cloudflared.exe
+
+tunnel.log
+events_debug_output.txt
+backend/cached_campaigns.json
