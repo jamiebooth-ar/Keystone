@@ -39,7 +39,7 @@ const Dashboard: React.FC = () => {
         {
             id: 4,
             name: 'Strategy Simulator',
-            category: 'Value Creation Agents',
+            category: 'Value Agents',
             status: 'idle',
             lastRun: 'Never',
             icon: ExtensionIcon,

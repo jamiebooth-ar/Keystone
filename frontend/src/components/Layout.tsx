@@ -97,7 +97,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             path: '/',
         },
         {
-            text: 'Value Creation',
+            text: 'Value',
             icon: <EmojiObjectsIcon />,
             id: 'Value',
             children: [
@@ -203,7 +203,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                                     {/* Tooltip added next to Dashboard */}
                                     {item.id === 'Dashboard' && (
                                         <Tooltip
-                                            title="CRM is split into core business areas: Value Creation, Market, Sell, Delivery, Finance"
+                                            title="CRM is split into core business areas: Value, Market, Sell, Delivery, Finance"
                                             arrow
                                             placement="right"
                                         >
