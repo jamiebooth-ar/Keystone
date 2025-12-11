@@ -4,6 +4,7 @@ import SmartToyIcon from '@mui/icons-material/SmartToy';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import PeopleIcon from '@mui/icons-material/People';
+import ExtensionIcon from '@mui/icons-material/Extension';
 
 const Dashboard: React.FC = () => {
     // Placeholder agent data - will be replaced with real data when AI agents are implemented
@@ -41,12 +42,19 @@ const Dashboard: React.FC = () => {
             category: 'Value Creation Agents',
             status: 'idle',
             lastRun: 'Never',
-            icon: HelperTwoToneIcon, // Need to import this or reuse another
+            icon: ExtensionIcon,
             description: 'Simulates business strategies for impact analysis'
         }
     ];
 
-    // ... (getStatusColor) ...
+    const getStatusColor = (status: string) => {
+        switch (status) {
+            case 'running': return 'success';
+            case 'paused': return 'warning';
+            case 'idle': return 'default';
+            default: return 'default';
+        }
+    };
 
     return (
         <Container maxWidth="xl" sx={{ mt: 0.5, mb: 4 }}>
