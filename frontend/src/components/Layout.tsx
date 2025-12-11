@@ -231,7 +231,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
     const drawer = (isCollapsed: boolean) => {
         return (
-            <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', bgcolor: '#f8f9fa' }}>
+            <Box sx={{
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                bgcolor: '#f8f9fa',
+                // Snap content width immediately when collapsed
+                width: isCollapsed ? collapsedDrawerWidth : '100%',
+                overflow: 'hidden'
+            }}>
                 <Box
                     sx={{
                         flex: 1,
