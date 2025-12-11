@@ -88,6 +88,20 @@ class MetaService:
                 print(f"Response: {e.response.text}")
             return {}
 
+    def get_account_name(self) -> str:
+        """Fetch and log the Ad Account Name for verification"""
+        try:
+            # We don't use 'act_' prefix for some endpoints if ID already has it? 
+            # Config has it. endpoint should be just ID.
+            # _make_request adds base_url/version/endpoint
+            # endpoint = self.ad_account_id
+            data = self._make_request(self.ad_account_id, params={"fields": "name"})
+            name = data.get("name", "Unknown")
+            print(f"[DEBUG] >>> CONNECTED TO AD ACCOUNT: '{name}' (ID: {self.ad_account_id}) <<<")
+            return name
+        except Exception as e:
+            print(f"[ERROR] Could not fetch account name: {e}")
+            return "Unknown"
     def fetch_active_campaigns(self) -> List[Dict]:
         """Fetch only ACTIVE campaigns with minimal fields for speed"""
         endpoint = f"{self.ad_account_id}/campaigns"
@@ -314,6 +328,15 @@ class MetaService:
         """Fetch fresh data from Meta and update DB (Intended for background thread)"""
         print("Fetching live data from Meta...")
         raw_campaigns = self.fetch_active_campaigns()
+        
+        if not self.access_token:
+            print("No Meta access token found")
+            return # Assuming _get_empty_structure() is not needed here as it's a background update
+        
+        # Verify Account Name (Log it clearly)
+        self.get_account_name()
+            
+        print("Fetching live data from Meta...") # This line is redundant after the first print
         
         if not raw_campaigns:
             print("No campaigns found")

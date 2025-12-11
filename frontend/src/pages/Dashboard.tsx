@@ -74,13 +74,13 @@ const Dashboard: React.FC = () => {
                         <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                             <CardContent>
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0 }}>
                                         <agent.icon color="primary" />
-                                        <Box>
-                                            <Typography variant="h6" component="div" sx={{ lineHeight: 1.2 }}>
+                                        <Box sx={{ minWidth: 0 }}>
+                                            <Typography variant="h6" component="div" sx={{ lineHeight: 1.2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                                 {agent.name}
                                             </Typography>
-                                            <Typography variant="caption" color="primary" sx={{ fontWeight: 600 }}>
+                                            <Typography variant="caption" color="primary" sx={{ fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block' }}>
                                                 {agent.category}
                                             </Typography>
                                         </Box>
