@@ -48,11 +48,11 @@ const Dashboard: React.FC = () => {
 
     // Simplified rendering - single list
     return (
-        <Container maxWidth="xl" sx={{ mt: 1, mb: 4 }}>
+        <Container maxWidth="xl" sx={{ mt: 0.5, mb: 4 }}>
             {/* Header Section */}
-            <Box sx={{ mb: 4 }}>
-                <Typography variant="h4" color="primary" gutterBottom fontWeight={700}>
-                    Automated Agents
+            <Box sx={{ mb: 3 }}>
+                <Typography variant="h4" color="primary" gutterBottom fontWeight={700} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <SmartToyIcon fontSize="large" /> Automated Agents
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
                     Overview and status of current AI Agents

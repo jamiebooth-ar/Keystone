@@ -95,7 +95,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             children: [
                 { text: 'FindAMasters', icon: null, path: '/fam', id: 'FAM' },
                 { text: 'FindAPhD', icon: null, path: '/fap', id: 'FAP' },
-                { text: 'Project', icon: null, id: 'ProjectHeader', path: '#' }
+                { text: 'Upcoming Projects', icon: null, path: '/upcoming-projects', id: 'UpcomingProjects' }
             ]
         },
         {
@@ -243,11 +243,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                             <ListItemIcon sx={{ minWidth: isCollapsed ? 0 : 40, justifyContent: 'center' }}>
                                 <LogoutIcon />
                             </ListItemIcon>
-                            {!isCollapsed && (
-                                <ListItemText
-                                    primary="" // Removed text as requested
-                                />
-                            )}
+                            {/* Text removed for icon-only look */}
                         </ListItemButton>
                     </ListItem>
                 </List>
