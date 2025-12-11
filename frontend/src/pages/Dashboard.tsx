@@ -28,12 +28,12 @@ const Dashboard: React.FC = () => {
         },
         {
             id: 3,
-            name: 'Audience Analyzer',
+            name: 'Audience Analyser',
             category: 'Marketing Agents',
             status: 'idle',
             lastRun: '1 day ago',
             icon: PeopleIcon,
-            description: 'Analyzes audience performance and targeting'
+            description: 'Analyses audience performance and targeting'
         }
     ];
 
@@ -51,8 +51,8 @@ const Dashboard: React.FC = () => {
         <Container maxWidth="xl" sx={{ mt: 0.5, mb: 4 }}>
             {/* Header Section */}
             <Box sx={{ mb: 3 }}>
-                <Typography variant="h4" color="primary" gutterBottom fontWeight={400} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <SmartToyIcon fontSize="large" /> Automated Agents
+                <Typography variant="h4" color="text.primary" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1, fontFamily: '"Inter", "Helvetica", "Arial", sans-serif', fontWeight: 500, letterSpacing: '-0.02em' }}>
+                    <SmartToyIcon fontSize="large" color="primary" /> Automated Agents
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
                     Overview and status of current AI Agents
