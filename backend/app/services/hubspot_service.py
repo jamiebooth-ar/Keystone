@@ -1,3 +1,6 @@
+import requests
+import os
+import json
 from hubspot import HubSpot
 import time
 from app.core.config import settings
