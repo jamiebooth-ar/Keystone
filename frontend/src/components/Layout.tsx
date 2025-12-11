@@ -236,8 +236,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 display: 'flex',
                 flexDirection: 'column',
                 bgcolor: '#f8f9fa',
-                // Snap content width immediately when collapsed
-                width: isCollapsed ? collapsedDrawerWidth : '100%',
                 overflow: 'hidden'
             }}>
                 <Box
@@ -249,12 +247,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         msOverflowStyle: 'none',
                     }}
                 >
-                    <List sx={{ mt: 2 }}>
+                    <List sx={{ mt: 2, width: isCollapsed ? collapsedDrawerWidth : '100%' }}>
                         {menuItems.map(item => renderMenuItem(item, 0, isCollapsed))}
                     </List>
                 </Box>
 
-                <List sx={{ px: isCollapsed ? 1 : 2, pb: 2 }}>
+                <List sx={{ px: isCollapsed ? 1 : 2, pb: 2, width: isCollapsed ? collapsedDrawerWidth : '100%' }}>
                     <Divider sx={{ mb: 2 }} />
                     <ListItem disablePadding>
                         <ListItemButton
