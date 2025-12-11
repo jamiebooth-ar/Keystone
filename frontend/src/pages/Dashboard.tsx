@@ -77,10 +77,24 @@ const Dashboard: React.FC = () => {
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0 }}>
                                         <agent.icon color="primary" />
                                         <Box sx={{ minWidth: 0 }}>
-                                            <Typography variant="h6" component="div" sx={{ lineHeight: 1.2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                            <Typography variant="h6" component="div" sx={{
+                                                lineHeight: '24px',
+                                                height: '24px',
+                                                whiteSpace: 'nowrap',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis'
+                                            }}>
                                                 {agent.name}
                                             </Typography>
-                                            <Typography variant="caption" color="primary" sx={{ fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block' }}>
+                                            <Typography variant="caption" color="primary" sx={{
+                                                fontWeight: 600,
+                                                lineHeight: '20px',
+                                                height: '20px',
+                                                whiteSpace: 'nowrap',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                                display: 'block'
+                                            }}>
                                                 {agent.category}
                                             </Typography>
                                         </Box>

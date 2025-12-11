@@ -373,7 +373,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                             borderRight: '1px solid',
                             borderColor: 'divider',
                             mt: '64px',
-                            transition: 'width 0.3s ease',
+                            transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)', // Slower and smoother
                             overflowX: 'hidden',
                         },
                     }}
@@ -391,7 +391,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     width: { sm: `calc(100% - ${currentDrawerWidth}px)` },
                     minHeight: '100vh',
                     mt: '64px',
-                    transition: 'width 0.3s ease',
+                    transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)', // Sync with drawer
                 }}
             >
                 <Box sx={{ p: 4 }}>
