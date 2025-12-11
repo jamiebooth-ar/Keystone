@@ -343,7 +343,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             {/* Sidebar */}
             <Box
                 component="nav"
-                sx={{ width: { sm: currentDrawerWidth }, flexShrink: { sm: 0 } }}
+                sx={{
+                    width: { sm: currentDrawerWidth },
+                    flexShrink: { sm: 0 },
+                    // ANIMATE THE LAYOUT CONTAINER TO MATCH DRAWER
+                    transition: desktopOpen
+                        ? 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
+                        : 'width 0.2s ease',
+                }}
             >
                 <Drawer
                     variant="temporary"
