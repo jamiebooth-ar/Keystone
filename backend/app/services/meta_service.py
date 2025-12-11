@@ -51,11 +51,6 @@ class MetaService:
         
 
 
-
-
-    def _get_headers(self):
-        return {}
-
     def _make_request(self, endpoint: str, params: Dict = None) -> Dict:
         url = f"{self.base_url}/{self.api_version}/{endpoint}"
         if not params:
@@ -293,11 +288,7 @@ class MetaService:
         print(f"Parallel fetch completed in {(datetime.now() - start_time).total_seconds():.2f}s")
         return insights_map
 
-    def get_campaigns(self, db: Session) -> CampaignList:
-        # Check DB first for fresh data
-        # We'll consider data "fresh" if updated within last 10 minutes
-        ten_mins_ago = datetime.utcnow() - timedelta(minutes=10)
-        
+
     def update_campaigns_background(self, db: Session):
         """Fetch fresh data from Meta and update DB (Intended for background thread)"""
         print("Fetching live data from Meta...")
