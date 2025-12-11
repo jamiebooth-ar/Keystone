@@ -51,7 +51,7 @@ const Dashboard: React.FC = () => {
         <Container maxWidth="xl" sx={{ mt: 0.5, mb: 4 }}>
             {/* Header Section */}
             <Box sx={{ mb: 3 }}>
-                <Typography variant="h4" color="primary" gutterBottom fontWeight={700} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Typography variant="h4" color="primary" gutterBottom fontWeight={400} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <SmartToyIcon fontSize="large" /> Automated Agents
                 </Typography>
                 <Typography variant="body1" color="text.secondary">

@@ -19,6 +19,11 @@ import {
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import EmojiObjectsIcon from '@mui/icons-material/EmojiObjects';
+import CampaignIcon from '@mui/icons-material/Campaign';
+import SellIcon from '@mui/icons-material/Sell';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -84,23 +89,28 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     const menuItems: MenuItem[] = [
         {
             text: 'Dashboard',
-            icon: null,
+            icon: null, // Dashboard usually keeps icon? User said "no icons gets to the headers". I'll assume standard behavior for Dashboard (Icon always? Or same rule?)
+            // If "headers" means the categories, maybe Dashboard is exempt? 
+            // But consistency suggests Dashboard should also follow "Open=Text, Closed=Icon".
+            // BUT Dashboard has no children.
+            // I'll set icon here, and apply logic globally.
+            // User said "icons appear [when closed], but when open = no icons".
             id: 'Dashboard',
             path: '/',
         },
         {
             text: 'Value Creation',
-            icon: null,
+            icon: <EmojiObjectsIcon />,
             id: 'Value',
             children: [
                 { text: 'FindAMasters', icon: null, path: '/fam', id: 'FAM' },
                 { text: 'FindAPhD', icon: null, path: '/fap', id: 'FAP' },
-                { text: 'Upcoming Projects', icon: null, path: '/upcoming-projects', id: 'UpcomingProjects' }
+                { text: 'Projects', icon: null, path: '/upcoming-projects', id: 'UpcomingProjects' }
             ]
         },
         {
             text: 'Marketing',
-            icon: null,
+            icon: <CampaignIcon />,
             id: 'Marketing',
             children: [
                 { text: 'Content', icon: null, path: '/content', id: 'Content' },
@@ -109,7 +119,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         },
         {
             text: 'Sales',
-            icon: null,
+            icon: <SellIcon />,
             id: 'Sales',
             children: [
                 { text: 'Predictor', icon: null, path: '/predictor', id: 'Predictor' },
@@ -119,7 +129,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         },
         {
             text: 'Delivery',
-            icon: null,
+            icon: <LocalShippingIcon />,
             id: 'Delivery',
             children: [
                 { text: 'Campaign', icon: null, path: '/campaigns', id: 'Campaigns' },
@@ -129,7 +139,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         },
         {
             text: 'Finance',
-            icon: null,
+            icon: <AccountBalanceIcon />,
             id: 'Finance',
             children: [
                 { text: 'Overview', icon: null, path: '/finance', id: 'FinanceOverview' },
@@ -167,7 +177,16 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                             },
                         }}
                     >
-                        {/* Text Only - Professional Look */}
+                        {/* Icon: Show if item has one AND (menu is collapsed OR it's a child? No, user said headers). 
+                            User: "when the menu bar is closed the icons appear, but when the menu is open = no icons gets to the headers?"
+                        */}
+                        {item.icon && isCollapsed && (
+                            <ListItemIcon sx={{ minWidth: 40, justifyContent: 'center', color: isSelected ? 'inherit' : 'text.secondary' }}>
+                                {item.icon}
+                            </ListItemIcon>
+                        )}
+
+                        {/* Text Only - Professional Look (Visible when open) */}
                         {!isCollapsed && (
                             <>
                                 <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
@@ -182,7 +201,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                                     {/* Tooltip added next to Dashboard */}
                                     {item.id === 'Dashboard' && (
                                         <Tooltip
-                                            title="Core business cycle: Create Value, Market, Sell, Deliver, and Profit."
+                                            title="CRM is split into core business areas: Value Creation, Market, Sell, Delivery, Finance"
                                             arrow
                                             placement="right"
                                         >
