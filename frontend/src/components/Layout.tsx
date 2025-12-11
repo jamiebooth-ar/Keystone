@@ -373,7 +373,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                             borderRight: '1px solid',
                             borderColor: 'divider',
                             mt: '64px',
-                            transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)', // Slower and smoother
+                            borderRight: '1px solid',
+                            borderColor: 'divider',
+                            mt: '64px',
+                            // Slow Open (0.8s), Fast Close (0.2s)
+                            transition: desktopOpen
+                                ? 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
+                                : 'width 0.2s ease',
                             overflowX: 'hidden',
                         },
                     }}
@@ -391,7 +397,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     width: { sm: `calc(100% - ${currentDrawerWidth}px)` },
                     minHeight: '100vh',
                     mt: '64px',
-                    transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)', // Sync with drawer
+                    minHeight: '100vh',
+                    mt: '64px',
+                    // Sync with drawer: Slow Open, Fast Close
+                    transition: desktopOpen
+                        ? 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
+                        : 'width 0.2s ease',
                 }}
             >
                 <Box sx={{ p: 4 }}>
