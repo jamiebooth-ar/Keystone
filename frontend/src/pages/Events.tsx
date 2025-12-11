@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import {
-    Box, Typography, Container, Grid, Card, CardContent, CardMedia,
-    Chip, CircularProgress, Alert, Button
+    Box, Typography, Container, Chip, CircularProgress, Alert, Table, TableBody, TableCell,
+    TableContainer, TableHead, TableRow, Paper
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import api from '../api';
-import type { ManagedEvent } from '../types';
+import type { LegacyEventStats } from '../types';
 
 const Events: React.FC = () => {
-    const [events, setEvents] = useState<ManagedEvent[]>([]);
+    const [events, setEvents] = useState<LegacyEventStats[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -16,8 +15,9 @@ const Events: React.FC = () => {
         const fetchEvents = async () => {
             try {
                 setLoading(true);
-                // Fetching from new CMS4 endpoint
-                const response = await api.get<ManagedEvent[]>('/events/');
+                // Fetching from legacy stats endpoint with proper headers
+                const response = await api.get<LegacyEventStats[]>('/events/stats/legacy');
+                console.log('Legacy events response:', response.data);
                 setEvents(response.data);
             } catch (err) {
                 console.error('Error fetching events:', err);
@@ -30,11 +30,6 @@ const Events: React.FC = () => {
 
         fetchEvents();
     }, []);
-
-    const handleCreateEvent = async () => {
-        // Placeholder for Create Action
-        alert("Create Event Modal will open here.");
-    };
 
     if (loading) return (
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
@@ -50,94 +45,83 @@ const Events: React.FC = () => {
 
     return (
         <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
-            <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Box>
-                    <Typography variant="h4" color="primary" gutterBottom fontWeight={700}>
-                        Events
-                    </Typography>
-                    <Typography variant="body1" color="text.secondary">
-                        Manage your upcoming events
-                    </Typography>
-                </Box>
-                <Button
-                    variant="contained"
-                    startIcon={<AddIcon />}
-                    onClick={handleCreateEvent}
-                    sx={{ borderRadius: 2 }}
-                >
-                    Create Event
-                </Button>
+            <Box sx={{ mb: 4 }}>
+                <Typography variant="h4" color="primary" gutterBottom fontWeight={700}>
+                    Event Performance Stats
+                </Typography>
+                <Typography variant="body1" color="text.secondary">
+                    External event signup data from legacy system
+                </Typography>
             </Box>
 
             {!events || events.length === 0 ? (
-                <Alert severity="info" action={
-                    <Button color="inherit" size="small" onClick={handleCreateEvent}>
-                        Create One
-                    </Button>
-                }>
-                    No events found in the system.
+                <Alert severity="info">
+                    No event stats available from the legacy system.
                 </Alert>
             ) : (
-                <Grid container spacing={3}>
-                    {events.map((event) => {
-                        // Adapter logic for UI
-                        const displayDate = new Date(event.start_date || Date.now()).toLocaleDateString();
-                        const displayCity = event.city || "Online";
+                <TableContainer component={Paper} elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>
+                    <Table>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Product</TableCell>
+                                <TableCell>Venue</TableCell>
+                                <TableCell>Audience</TableCell>
+                                <TableCell>Brand</TableCell>
+                                <TableCell>Platform</TableCell>
+                                <TableCell align="right">Signups</TableCell>
+                                <TableCell>Date</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {events.map((event) => {
+                                // Brand chip colors: FAM = #1AC284, FAP = #0000FF, FAU = #7645FB
+                                let brandChipColor = "#7645FB"; // Default to FAU purple
 
-                        const placeholderUrl = `https://placehold.co/600x400/7645FB/FFFFFF?text=${encodeURIComponent(displayCity)}`;
+                                if (event.brand === "FAM") {
+                                    brandChipColor = "#1AC284"; // FindAMasters green
+                                } else if (event.brand === "FAP") {
+                                    brandChipColor = "#0000FF"; // FindAPhD blue
+                                }
 
-                        return (
-                            // @ts-expect-error: Grid item prop missing in types
-                            <Grid key={event.id} item xs={12} sm={6} md={4} lg={3}>
-                                <Card sx={{
-                                    height: '100%',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    transition: 'transform 0.2s',
-                                    '&:hover': { transform: 'translateY(-4px)', boxShadow: 4 }
-                                }}>
-                                    <div style={{ position: 'relative' }}>
-                                        <CardMedia
-                                            component="img"
-                                            height="200"
-                                            image={placeholderUrl}
-                                            alt={event.name}
-                                            sx={{ objectFit: 'cover' }}
-                                        />
-                                        <Chip
-                                            label={event.status_id === 1 ? 'Active' : 'Inactive'}
-                                            size="small"
-                                            color={event.status_id === 1 ? 'success' : 'default'}
-                                            sx={{
-                                                position: 'absolute',
-                                                top: 10,
-                                                right: 10,
-                                                fontWeight: 'bold'
-                                            }}
-                                        />
-                                    </div>
-                                    <CardContent sx={{ flexGrow: 1 }}>
-                                        <Typography variant="overline" display="block" color="text.secondary" sx={{ lineHeight: 1 }}>
-                                            {displayDate}
-                                        </Typography>
-                                        <Typography gutterBottom variant="h6" component="div" sx={{ mt: 1, lineHeight: 1.2 }}>
-                                            {event.name}
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                                            {event.location_building}
-                                        </Typography>
-
-                                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 'auto' }}>
-                                            <Typography variant="caption" sx={{ bgcolor: 'action.hover', px: 1, py: 0.5, borderRadius: 1 }}>
-                                                {displayCity}
+                                return (
+                                    <TableRow key={event.id} hover sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
+                                        <TableCell>{event.product || '-'}</TableCell>
+                                        <TableCell>{event.venue || '-'}</TableCell>
+                                        <TableCell>{event.audience || '-'}</TableCell>
+                                        <TableCell>
+                                            <Chip
+                                                label={event.brand || 'N/A'}
+                                                size="small"
+                                                sx={{
+                                                    bgcolor: brandChipColor,
+                                                    color: 'white',
+                                                }}
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Chip
+                                                label={event.platform || 'Unknown'}
+                                                size="small"
+                                                sx={{
+                                                    bgcolor: (event.platform === 'TikTok' ? '#000000' : event.platform === 'YouTube' ? '#FF0000' : '#0668E1'),
+                                                    color: 'white',
+                                                }}
+                                            />
+                                        </TableCell>
+                                        <TableCell align="right">
+                                            <Typography variant="body2" fontWeight={600}>
+                                                {event.signups}
                                             </Typography>
-                                        </Box>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                        );
-                    })}
-                </Grid>
+                                        </TableCell>
+                                        <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                            {event.date || '-'}
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
             )}
         </Container>
     );
