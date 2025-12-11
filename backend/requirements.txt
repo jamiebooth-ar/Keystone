@@ -10,3 +10,4 @@ requests==2.31.0
 pandas==2.2.0
 python-multipart==0.0.6
 hubspot-api-client==8.0.0
+email-validator
