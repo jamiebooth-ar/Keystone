@@ -68,9 +68,9 @@ const Dashboard: React.FC = () => {
                 </Typography>
             </Box>
 
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
                 {agents.map((agent) => (
-                    <Grid item xs={12} sm={6} md={3} lg={3} key={agent.id}>
+                    <Grid item xs={12} sm={6} md={3} lg={3} xl={3} key={agent.id} sx={{ minWidth: 0 }}>
                         <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                             <CardContent>
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
