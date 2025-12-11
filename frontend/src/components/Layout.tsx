@@ -23,13 +23,15 @@ import EmojiObjectsIcon from '@mui/icons-material/EmojiObjects';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import SellIcon from '@mui/icons-material/Sell';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+// import AccountBalanceIcon from '@mui/icons-material/AccountBalance'; // Removed per request
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import CurrencyPoundIcon from '@mui/icons-material/CurrencyPound';
 
 const drawerWidth = 240;
 const collapsedDrawerWidth = 64;
@@ -135,7 +137,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         },
         {
             text: 'Finance',
-            icon: <AccountBalanceIcon />,
+            icon: <CurrencyPoundIcon />,
             id: 'Finance',
             children: [
                 { text: 'Overview', icon: null, path: '/finance', id: 'FinanceOverview' },
@@ -155,29 +157,34 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <React.Fragment key={item.id}>
                 <ListItem disablePadding sx={{ display: 'block' }}>
                     <ListItemButton
-                        selected={isSelected}
-                        onClick={() => handleMenuClick(item.id, item.path)}
+                        onClick={() => {
+                            handleMenuClick(item.id, item.path);
+                            // If sidebar is collapsed, OPEN it when clicking an icon
+                            if (isCollapsed && item.children) {
+                                // Assuming handleDesktopDrawerToggle toggles logic.
+                                // We need to force OPEN.
+                                // But Layout uses `setDesktopOpen`.
+                                // I'll need to expose setDesktopOpen or check if desktopOpen is controlled.
+                                // Wait, `handleDesktopDrawerToggle` just toggles.
+                                // But I am inside `Layout`, so I can access `setDesktopOpen`.
+                                setDesktopOpen(true);
+                            }
+                        }}
                         sx={{
-                            minHeight: 40, // Slightly more compact
+                            minHeight: 48,
                             justifyContent: isCollapsed ? 'center' : 'initial',
                             px: 2.5,
-                            pl: paddingLeft,
-                            py: 1,
-                            borderRadius: 1, // Soft rounded corners
-                            mx: 1, // Margin for floating look
-                            mb: 0.5,
-                            '&.Mui-selected': {
-                                bgcolor: 'primary.main',
-                                color: 'white',
-                                '&:hover': { bgcolor: 'primary.dark' },
+                            bgcolor: isSelected ? 'rgba(0, 0, 0, 0.04)' : 'transparent',
+                            '&:hover': {
+                                bgcolor: 'rgba(0, 0, 0, 0.04)',
                             },
                         }}
                     >
-                        {/* Icon: Show if item has one AND (menu is collapsed OR it's a child? No, user said headers). 
+                        {/* Icon: Show if item has one AND (menu is collapsed OR it's a child? No, user said headers).
                             User: "when the menu bar is closed the icons appear, but when the menu is open = no icons gets to the headers?"
                         */}
                         {item.icon && isCollapsed && (
-                            <ListItemIcon sx={{ minWidth: 40, justifyContent: 'center', color: isSelected ? 'inherit' : 'text.secondary' }}>
+                            <ListItemIcon sx={{ minWidth: 40, justifyContent: 'center', color: 'primary.main' }}>
                                 {item.icon}
                             </ListItemIcon>
                         )}
