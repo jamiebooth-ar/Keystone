@@ -51,6 +51,18 @@ interface MenuItem {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
     const [mobileOpen, setMobileOpen] = useState(false);
     const [desktopOpen, setDesktopOpen] = useState(true);
+    const [contentOpen, setContentOpen] = useState(true);
+
+    useEffect(() => {
+        if (desktopOpen) {
+            setContentOpen(true);
+        } else {
+            const timer = setTimeout(() => {
+                setContentOpen(false);
+            }, 750);
+            return () => clearTimeout(timer);
+        }
+    }, [desktopOpen]);
     // Collapsed by default
     const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
@@ -385,7 +397,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     }}
                     open
                 >
-                    {drawer(!desktopOpen)}
+                    {drawer(!contentOpen)}
                 </Drawer>
             </Box>
 
