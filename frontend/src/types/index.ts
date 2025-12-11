@@ -46,6 +46,17 @@ export interface ManagedEvent {
     brand?: string;
 }
 
+export interface LegacyEventStats {
+    id: number;
+    product: string;
+    venue: string;
+    audience: string;
+    brand: string;
+    platform: string;
+    signups: number;
+    date: string;
+}
+
 export interface GeoLocation {
     id: number;
     name: string;
