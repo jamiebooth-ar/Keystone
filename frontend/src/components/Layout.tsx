@@ -23,7 +23,7 @@ import EmojiObjectsIcon from '@mui/icons-material/EmojiObjects';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import SellIcon from '@mui/icons-material/Sell';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
+// LocalShippingIcon duplicated
 // import AccountBalanceIcon from '@mui/icons-material/AccountBalance'; // Removed per request
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -151,7 +151,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
         // Simplified indentation for text-only menu
         // Base padding 2.5, +1.5 for each depth level
-        const paddingLeft = isCollapsed ? 2.5 : 2.5 + (depth * 2);
+        // const paddingLeft = isCollapsed ? 2.5 : 2.5 + (depth * 2); // Unused
 
         return (
             <React.Fragment key={item.id}>
