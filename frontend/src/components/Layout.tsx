@@ -346,10 +346,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 sx={{
                     width: { sm: currentDrawerWidth },
                     flexShrink: { sm: 0 },
-                    // ANIMATE THE LAYOUT CONTAINER TO MATCH DRAWER
-                    transition: desktopOpen
-                        ? 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
-                        : 'width 0.2s ease',
+                    // ANIMATE THE LAYOUT CONTAINER MATCHING DRAWER
+                    transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
                 }}
             >
                 <Drawer
@@ -380,11 +378,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                             borderRight: '1px solid',
                             borderColor: 'divider',
                             mt: '64px',
-
-                            // Slow Open (0.8s), Fast Close (0.2s)
-                            transition: desktopOpen
-                                ? 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
-                                : 'width 0.2s ease',
+                            // Slow Open/Close (0.8s)
+                            transition: 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
                             overflowX: 'hidden',
                         },
                     }}
