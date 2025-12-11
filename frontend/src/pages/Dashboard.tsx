@@ -11,6 +11,7 @@ const Dashboard: React.FC = () => {
         {
             id: 1,
             name: 'Campaign Optimizer',
+            category: 'Delivery Agents',
             status: 'idle',
             lastRun: '2 hours ago',
             icon: TrendingUpIcon,
@@ -19,6 +20,7 @@ const Dashboard: React.FC = () => {
         {
             id: 2,
             name: 'Budget Manager',
+            category: 'Delivery Agents',
             status: 'idle',
             lastRun: '5 hours ago',
             icon: AccountBalanceWalletIcon,
@@ -27,6 +29,7 @@ const Dashboard: React.FC = () => {
         {
             id: 3,
             name: 'Audience Analyzer',
+            category: 'Marketing Agents',
             status: 'idle',
             lastRun: '1 day ago',
             icon: PeopleIcon,
@@ -43,6 +46,7 @@ const Dashboard: React.FC = () => {
         }
     };
 
+    // Simplified rendering - single list
     return (
         <Container maxWidth="lg">
             <Box sx={{ mt: 4, mb: 4 }}>
@@ -51,59 +55,44 @@ const Dashboard: React.FC = () => {
                         <SmartToyIcon /> Automated Agents
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                        AI-powered automation agents for campaign management
+                        Monitor and manage your AI workforce
                     </Typography>
                 </Box>
 
                 <Grid container spacing={3}>
-                    {agents.map((agent) => {
-                        const IconComponent = agent.icon;
-                        return (
-                            <Grid item xs={12} md={4} key={agent.id}>
-                                <Card 
-                                    sx={{ 
-                                        height: '100%',
-                                        transition: 'transform 0.2s, box-shadow 0.2s',
-                                        '&:hover': { 
-                                            transform: 'translateY(-4px)', 
-                                            boxShadow: 4 
-                                        }
-                                    }}
-                                >
-                                    <CardContent>
-                                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                                            <Box sx={{ 
-                                                bgcolor: 'primary.main', 
-                                                color: 'white', 
-                                                p: 1.5, 
-                                                borderRadius: 2,
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center'
-                                            }}>
-                                                <IconComponent />
+                    {agents.map((agent) => (
+                        <Grid item xs={12} sm={6} md={4} key={agent.id}>
+                            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                                <CardContent>
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                            <agent.icon color="primary" />
+                                            <Box>
+                                                <Typography variant="h6" component="div" sx={{ lineHeight: 1.2 }}>
+                                                    {agent.name}
+                                                </Typography>
+                                                <Typography variant="caption" color="primary" sx={{ fontWeight: 600 }}>
+                                                    {agent.category}
+                                                </Typography>
                                             </Box>
-                                            <Chip 
-                                                label={agent.status.toUpperCase()} 
-                                                size="small" 
-                                                color={getStatusColor(agent.status) as any}
-                                                sx={{ fontWeight: 600 }}
-                                            />
                                         </Box>
-                                        <Typography variant="h6" fontWeight={600} gutterBottom>
-                                            {agent.name}
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                                            {agent.description}
-                                        </Typography>
-                                        <Typography variant="caption" color="text.secondary">
-                                            Last run: {agent.lastRun}
-                                        </Typography>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                        );
-                    })}
+                                        <Chip
+                                            label={agent.status}
+                                            color={getStatusColor(agent.status) as any}
+                                            size="small"
+                                            variant="outlined"
+                                        />
+                                    </Box>
+                                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2, flexGrow: 1 }}>
+                                        {agent.description}
+                                    </Typography>
+                                    <Typography variant="caption" display="block" color="text.secondary">
+                                        Last run: {agent.lastRun}
+                                    </Typography>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    ))}
                 </Grid>
             </Box>
         </Container>

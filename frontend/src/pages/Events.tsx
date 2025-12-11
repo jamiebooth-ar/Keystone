@@ -1,8 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import {
-    Box, Typography, Container, Chip, CircularProgress, Alert, Table, TableBody, TableCell,
-    TableContainer, TableHead, TableRow, Paper
+    Container,
+    Typography,
+    Box,
+    Grid,
+    Card,
+    CardContent,
+    Button,
+    Chip,
+    CircularProgress,
+    Alert
 } from '@mui/material';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import api from '../api';
 import type { LegacyEventStats } from '../types';
 
@@ -15,9 +24,8 @@ const Events: React.FC = () => {
         const fetchEvents = async () => {
             try {
                 setLoading(true);
-                // Fetching from legacy stats endpoint with proper headers
+                // Fetching from new CMS4 endpoint which proxies legacy stats
                 const response = await api.get<LegacyEventStats[]>('/events/stats/legacy');
-                console.log('Legacy events response:', response.data);
                 setEvents(response.data);
             } catch (err) {
                 console.error('Error fetching events:', err);
@@ -31,98 +39,95 @@ const Events: React.FC = () => {
         fetchEvents();
     }, []);
 
-    if (loading) return (
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
-            <CircularProgress />
-        </Box>
-    );
+    const handleDownloadPdf = (eventName: string) => {
+        // Placeholder for PDF download action
+        console.log(`Downloading PDF for ${eventName}`);
+        alert(`Downloading PDF Breakdown for ${eventName}...`);
+    };
 
-    if (error) return (
-        <Container maxWidth="lg" sx={{ mt: 4 }}>
-            <Alert severity="error">{error}</Alert>
-        </Container>
-    );
+    if (loading) {
+        return (
+            <Container sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+                <CircularProgress />
+            </Container>
+        );
+    }
+
+    if (error) {
+        return (
+            <Container sx={{ mt: 4 }}>
+                <Alert severity="error">{error}</Alert>
+            </Container>
+        );
+    }
 
     return (
-        <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
-            <Box sx={{ mb: 4 }}>
-                <Typography variant="h4" color="primary" gutterBottom fontWeight={700}>
-                    Event Performance Stats
-                </Typography>
-                <Typography variant="body1" color="text.secondary">
-                    External event signup data from legacy system
-                </Typography>
+        <Container maxWidth="xl">
+            <Box sx={{ mt: 2, mb: 4 }}>
+                {/* Title removed as requested */}
+
+                <Grid container spacing={3}>
+                    {events.map((event) => (
+                        <Grid item xs={12} sm={6} md={4} lg={3} key={event.id || Math.random()}>
+                            <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                                {/* Placeholder Image */}
+                                <Box
+                                    sx={{
+                                        height: 140,
+                                        bgcolor: 'grey.300',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        color: 'text.secondary'
+                                    }}
+                                >
+                                    <Typography variant="caption">Venue Placeholder</Typography>
+                                </Box>
+
+                                <CardContent sx={{ flexGrow: 1 }}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+                                        <Typography variant="h6" fontWeight={600} component="div" sx={{ lineHeight: 1.2 }}>
+                                            {event.venue}
+                                        </Typography>
+                                        <Chip
+                                            label={event.brand || 'FAU'}
+                                            size="small"
+                                            color={event.brand === 'FAM' ? 'primary' : event.brand === 'FAP' ? 'secondary' : 'default'}
+                                            variant="outlined"
+                                        />
+                                    </Box>
+
+                                    <Box sx={{ mb: 2 }}>
+                                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                                            <strong>Product:</strong> {event.product}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                                            <strong>Audience:</strong> {event.audience}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                                            <strong>Date:</strong> {event.date}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            <strong>Signups:</strong> {event.signups}
+                                        </Typography>
+                                    </Box>
+
+                                    <Button
+                                        variant="outlined"
+                                        size="small"
+                                        startIcon={<PictureAsPdfIcon />}
+                                        fullWidth
+                                        onClick={() => handleDownloadPdf(event.venue)}
+                                        sx={{ mt: 'auto' }}
+                                    >
+                                        PDF Stats
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    ))}
+                </Grid>
             </Box>
-
-            {!events || events.length === 0 ? (
-                <Alert severity="info">
-                    No event stats available from the legacy system.
-                </Alert>
-            ) : (
-                <TableContainer component={Paper} elevation={0} sx={{ border: '1px solid', borderColor: 'divider' }}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>Product</TableCell>
-                                <TableCell>Venue</TableCell>
-                                <TableCell>Audience</TableCell>
-                                <TableCell>Brand</TableCell>
-                                <TableCell>Platform</TableCell>
-                                <TableCell align="right">Signups</TableCell>
-                                <TableCell>Date</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {events.map((event) => {
-                                // Brand chip colors: FAM = #1AC284, FAP = #0000FF, FAU = #7645FB
-                                let brandChipColor = "#7645FB"; // Default to FAU purple
-
-                                if (event.brand === "FAM") {
-                                    brandChipColor = "#1AC284"; // FindAMasters green
-                                } else if (event.brand === "FAP") {
-                                    brandChipColor = "#0000FF"; // FindAPhD blue
-                                }
-
-                                return (
-                                    <TableRow key={event.id} hover sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
-                                        <TableCell>{event.product || '-'}</TableCell>
-                                        <TableCell>{event.venue || '-'}</TableCell>
-                                        <TableCell>{event.audience || '-'}</TableCell>
-                                        <TableCell>
-                                            <Chip
-                                                label={event.brand || 'N/A'}
-                                                size="small"
-                                                sx={{
-                                                    bgcolor: brandChipColor,
-                                                    color: 'white',
-                                                }}
-                                            />
-                                        </TableCell>
-                                        <TableCell>
-                                            <Chip
-                                                label={event.platform || 'Unknown'}
-                                                size="small"
-                                                sx={{
-                                                    bgcolor: (event.platform === 'TikTok' ? '#000000' : event.platform === 'YouTube' ? '#FF0000' : '#0668E1'),
-                                                    color: 'white',
-                                                }}
-                                            />
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <Typography variant="body2" fontWeight={600}>
-                                                {event.signups}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell sx={{ whiteSpace: 'nowrap' }}>
-                                            {event.date || '-'}
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            )}
         </Container>
     );
 };

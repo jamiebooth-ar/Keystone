@@ -14,6 +14,7 @@ import {
     Collapse,
     ListSubheader,
     Tooltip,
+    Typography,
 } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -63,22 +64,38 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     };
 
     const handleMenuClick = (id: string, path?: string) => {
-        if (path) {
+        if (path && path !== '#') {
             navigate(path);
             if (mobileOpen) handleDrawerToggle();
-        } else {
-            setOpenMenus(prev => ({ ...prev, [id]: !prev[id] }));
+        }
+
+        // Single Expand Logic:
+        // If it's a parent item (no path or path='#'), toggle it and CLOSE others.
+        // We only want one expanded section at a time.
+        if (!path || path === '#') {
+            setOpenMenus(prev => {
+                const isCurrentlyOpen = prev[id];
+                // If opening, close others. If closing, just close.
+                return { [id]: !isCurrentlyOpen };
+            });
         }
     };
 
     const menuItems: MenuItem[] = [
         {
-            text: 'Value',
+            text: 'Dashboard',
+            icon: null,
+            id: 'Dashboard',
+            path: '/',
+        },
+        {
+            text: 'Value Creation',
             icon: null,
             id: 'Value',
             children: [
                 { text: 'FindAMasters', icon: null, path: '/fam', id: 'FAM' },
                 { text: 'FindAPhD', icon: null, path: '/fap', id: 'FAP' },
+                { text: 'Project', icon: null, id: 'ProjectHeader', path: '#' }
             ]
         },
         {
@@ -153,14 +170,26 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         {/* Text Only - Professional Look */}
                         {!isCollapsed && (
                             <>
-                                <ListItemText
-                                    primary={item.text}
-                                    primaryTypographyProps={{
-                                        fontSize: depth === 0 ? '0.9rem' : '0.85rem',
-                                        fontWeight: isSelected ? 600 : (depth === 0 ? 500 : 400),
-                                        color: 'inherit',
-                                    }}
-                                />
+                                <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+                                    <ListItemText
+                                        primary={item.text}
+                                        primaryTypographyProps={{
+                                            fontSize: depth === 0 ? '0.9rem' : '0.85rem',
+                                            fontWeight: isSelected ? 600 : (depth === 0 ? 500 : 400),
+                                            color: 'inherit',
+                                        }}
+                                    />
+                                    {/* Tooltip added next to Dashboard */}
+                                    {item.id === 'Dashboard' && (
+                                        <Tooltip
+                                            title="Core business cycle: Create Value, Market, Sell, Deliver, and Profit."
+                                            arrow
+                                            placement="right"
+                                        >
+                                            <InfoOutlinedIcon sx={{ fontSize: 16, ml: 1, cursor: 'help', opacity: 0.5, color: 'inherit' }} />
+                                        </Tooltip>
+                                    )}
+                                </Box>
                                 {item.children && (isOpen ? <ExpandLess sx={{ fontSize: '1.2rem', color: 'inherit', opacity: 0.7 }} /> : <ExpandMore sx={{ fontSize: '1.2rem', color: 'inherit', opacity: 0.7 }} />)}
                             </>
                         )}
@@ -189,34 +218,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         msOverflowStyle: 'none',
                     }}
                 >
-                    {!isCollapsed && (
-                        <ListSubheader
-                            component="div"
-                            sx={{
-                                bgcolor: 'transparent',
-                                fontWeight: 400,
-                                color: 'text.secondary',
-                                opacity: 0.6,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                pt: 1,
-                                pb: 0.5,
-                                fontSize: '0.75rem',
-                                letterSpacing: '0.05em',
-                            }}
-                        >
-                            Business breakdown
-                            <Tooltip
-                                title="Core business cycle: Create Value, Market, Sell, Deliver, and Profit."
-                                arrow
-                                placement="right"
-                            >
-                                <InfoOutlinedIcon sx={{ fontSize: 16, ml: 0.5, cursor: 'help', opacity: 0.7 }} />
-                            </Tooltip>
-                        </ListSubheader>
-                    )}
-                    <List>
+                    <List sx={{ mt: 2 }}>
                         {menuItems.map(item => renderMenuItem(item, 0, isCollapsed))}
                     </List>
                 </Box>
@@ -243,8 +245,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                             </ListItemIcon>
                             {!isCollapsed && (
                                 <ListItemText
-                                    primary="Logout"
-                                    primaryTypographyProps={{ fontWeight: 600, fontSize: '0.9rem' }}
+                                    primary="" // Removed text as requested
                                 />
                             )}
                         </ListItemButton>
@@ -263,7 +264,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 position="fixed"
                 elevation={0}
                 sx={{
-                    zIndex: (theme) => theme.zIndex.drawer + 1,
+                    zIndex: (theme: any) => theme.zIndex.drawer + 1,
                     bgcolor: 'white',
                     borderBottom: '1px solid',
                     borderColor: 'divider',
@@ -301,6 +302,25 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                             e.currentTarget.style.display = 'none';
                         }}
                     />
+
+                    <Box sx={{ flexGrow: 1 }} />
+
+                    {/* Logout Button in Top Right */}
+                    <IconButton
+                        onClick={handleLogout}
+                        color="primary"
+                        sx={{
+                            border: '1px solid',
+                            borderColor: 'divider',
+                            borderRadius: 2,
+                            p: 1
+                        }}
+                    >
+                        <LogoutIcon fontSize="small" />
+                        <Typography variant="button" sx={{ ml: 1, fontWeight: 600, display: { xs: 'none', sm: 'block' } }}>
+                            Log out
+                        </Typography>
+                    </IconButton>
                 </Toolbar>
             </AppBar>
 

@@ -59,8 +59,29 @@ class MetaService:
         
         try:
             response = requests.get(url, params=params, timeout=10)
-            response.raise_for_status()
-            return response.json()
+            
+            # DEBUG LOGGING START
+            print(f"[DEBUG] Meta API Request to {endpoint} Status: {response.status_code}")
+            if response.status_code != 200:
+                print(f"[DEBUG] Error Response Text: {response.text}")
+            
+            try:
+                data = response.json()
+                if "data" in data and isinstance(data["data"], list):
+                     print(f"[DEBUG] Meta API returned {len(data['data'])} items for {endpoint}")
+                elif "error" in data:
+                     print(f"[DEBUG] Meta API Error: {data['error']}")
+                else:
+                     print(f"[DEBUG] Meta API Response keys: {list(data.keys())}")
+                
+                response.raise_for_status()
+                return data
+            except ValueError:
+                print(f"[DEBUG] Failed to parse JSON. Raw text: {response.text}")
+                response.raise_for_status()
+                return {}
+            # DEBUG LOGGING END
+
         except requests.exceptions.RequestException as e:
             print(f"Error requesting {endpoint}: {e}")
             if hasattr(e, 'response') and e.response is not None:
@@ -520,8 +541,33 @@ class MetaService:
         print("[DEBUG] CRITICAL: DB and JSON Backup are empty. Blocking main thread for cold start fetch.")
         self.update_campaigns_background(db)
         
-        # Now recurse to return the newly saved data
-        return self.get_campaigns(db)
+        # Fetch from DB again (Non-Recursive) to avoid infinite loop if API returns nothing
+        print("[DEBUG] Cold start fetch complete. Querying DB for results...")
+        db_campaigns_final = db.query(CampaignModel).all()
+        
+        brand_campaigns_final = []
+        lead_campaigns_final = []
+        
+        for c in db_campaigns_final:
+            campaign_obj = Campaign(
+                id=c.id, name=c.name, status=c.status,
+                effective_status=c.effective_status, objective=c.objective,
+                daily_budget=c.daily_budget, total_spend=c.total_spend,
+                total_impressions=c.total_impressions, campaign_type=c.campaign_type,
+                brand=c.brand, platform=c.platform, campaign_date=c.campaign_date,
+                country_count=c.country_count, countries=c.countries,
+                targeted_countries=c.targeted_countries
+            )
+            if c.campaign_type == "Brand" or c.campaign_type == "Event":
+                brand_campaigns_final.append(campaign_obj)
+            elif c.campaign_type == "LeadGen":
+                lead_campaigns_final.append(campaign_obj)
+                
+        return CampaignList(
+            Brand=brand_campaigns_final,
+            LeadGen=lead_campaigns_final,
+            last_updated=datetime.now().isoformat()
+        )
         
         
 

@@ -13,6 +13,7 @@ import Analytics from './pages/Analytics';
 import Emailer from './pages/Emailer';
 import ContentBuilder from './pages/ContentBuilder';
 import Contacts from './pages/Contacts';
+import PlaceholderPage from './pages/PlaceholderPage';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuth();
@@ -138,6 +139,49 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/users"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <Contacts />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Placeholder Pages for Subheaders */}
+      <Route
+        path="/fam"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <PlaceholderPage />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/fap"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <PlaceholderPage />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/finance"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <PlaceholderPage />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
+
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
