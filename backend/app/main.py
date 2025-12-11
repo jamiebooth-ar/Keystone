@@ -1,8 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.api.routes import router as api_router
-from app.core.database import engine, Base
 from app.core.database import engine, Base
 from app.models import CampaignModel, User, Event, GeoLocation, Order, Product, OrderDetail, SplashBanner, MarketingPopup, GenericBooking, PageListing, BenchmarkStats, InstitutionBenchmark, Mailshot, EmailTemplate, PageTemplate, BespokePage, CompassSubscription
 
