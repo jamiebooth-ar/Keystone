@@ -392,14 +392,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 component="main"
                 sx={{
                     flexGrow: 1,
-                    width: { sm: `calc(100% - ${currentDrawerWidth}px)` },
+                    width: '100%', // Ensure it takes available space
                     minHeight: '100vh',
                     mt: '64px',
-
-                    // Sync with drawer: Slow Open, Fast Close
-                    transition: desktopOpen
-                        ? 'width 0.8s cubic-bezier(0.4, 0, 0.2, 1)'
-                        : 'width 0.2s ease',
+                    // Width is handled by flexGrow + Sidebar transition, ensuring perfect sync
                 }}
             >
                 <Box sx={{ p: 4 }}>
