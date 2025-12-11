@@ -181,6 +181,16 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/upcoming-projects"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <PlaceholderPage />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
 
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />

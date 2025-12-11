@@ -66,9 +66,9 @@ const Events: React.FC = () => {
             <Box sx={{ mt: 2, mb: 4 }}>
                 {/* Title removed as requested */}
 
-                <Grid container spacing={3}>
+                <Grid container spacing={3} alignItems="stretch">
                     {events.map((event) => (
-                        <Grid item xs={12} sm={6} md={4} lg={3} key={event.id || Math.random()}>
+                        <Grid item xs={12} sm={6} md={4} lg={3} key={event.id || Math.random()} sx={{ display: 'flex' }}>
                             <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                                 {/* Placeholder Image */}
                                 <Box

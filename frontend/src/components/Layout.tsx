@@ -317,9 +317,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                         }}
                     >
                         <LogoutIcon fontSize="small" />
-                        <Typography variant="button" sx={{ ml: 1, fontWeight: 600, display: { xs: 'none', sm: 'block' } }}>
-                            Log out
-                        </Typography>
                     </IconButton>
                 </Toolbar>
             </AppBar>
