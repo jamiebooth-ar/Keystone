@@ -34,34 +34,28 @@ const Dashboard: React.FC = () => {
             lastRun: '1 day ago',
             icon: PeopleIcon,
             description: 'Analyses audience performance and targeting'
+        },
+        {
+            id: 4,
+            name: 'Strategy Simulator',
+            category: 'Value Creation Agents',
+            status: 'idle',
+            lastRun: 'Never',
+            icon: HelperTwoToneIcon, // Need to import this or reuse another
+            description: 'Simulates business strategies for impact analysis'
         }
     ];
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case 'running': return 'success';
-            case 'paused': return 'warning';
-            case 'idle': return 'default';
-            default: return 'default';
-        }
-    };
+    // ... (getStatusColor) ...
 
-    // Simplified rendering - single list
     return (
         <Container maxWidth="xl" sx={{ mt: 0.5, mb: 4 }}>
             {/* Header Section */}
-            <Box sx={{ mb: 3 }}>
-                <Typography variant="h4" color="text.primary" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1, fontFamily: '"Inter", "Helvetica", "Arial", sans-serif', fontWeight: 500, letterSpacing: '-0.02em' }}>
-                    <SmartToyIcon fontSize="large" color="primary" /> Automated Agents
-                </Typography>
-                <Typography variant="body1" color="text.secondary">
-                    Overview and status of current AI Agents
-                </Typography>
-            </Box>
+            // ... (Header - same)
 
             <Grid container spacing={3}>
                 {agents.map((agent) => (
-                    <Grid item xs={12} sm={6} md={4} key={agent.id}>
+                    <Grid item xs={12} sm={6} md={4} lg={3} key={agent.id}>
                         <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                             <CardContent>
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>

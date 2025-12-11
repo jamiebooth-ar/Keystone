@@ -156,249 +156,249 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         return (
             <React.Fragment key={item.id}>
                 <ListItem disablePadding sx={{ display: 'block' }}>
+                    onClick={() => {
+                        handleMenuClick(item.id, item.path);
+                        // If sidebar is collapsed, OPEN it when clicking an icon
+                        if (isCollapsed && item.children) {
+                            setDesktopOpen(true);
+                        }
+                        // Navigate to first child if no direct path (and has children)
+                        if ((!item.path || item.path === '#') && item.children && item.children.length > 0) {
+                            const firstChild = item.children[0];
+                            if (firstChild.path) navigate(firstChild.path);
+                        }
+                    }}
+                    sx={{
+                        minHeight: 48,
+                        justifyContent: isCollapsed ? 'center' : 'initial',
+                        px: 2.5,
+                        bgcolor: isSelected ? 'rgba(0, 0, 0, 0.04)' : 'transparent',
+                        '&:hover': {
+                            bgcolor: 'rgba(0, 0, 0, 0.04)',
+                        },
+                    }}
+                    >
+                    {/* Icon: Show if item has one AND (menu is collapsed OR it's a child? No, user said headers). 
+                            User: "when the menu bar is closed the icons appear, but when the menu is open = no icons gets to the headers?"
+                        */}
+                    {item.icon && isCollapsed && (
+                        <ListItemIcon sx={{ minWidth: 40, justifyContent: 'center', color: '#3E4DA1' }}>
+                            {item.icon}
+                        </ListItemIcon>
+                    )}
+
+                    {/* Text Only - Professional Look (Visible when open) */}
+                    {!isCollapsed && (
+                        <>
+                            <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+                                <ListItemText
+                                    primary={item.text}
+                                    primaryTypographyProps={{
+                                        fontSize: depth === 0 ? '0.9rem' : '0.85rem',
+                                        fontWeight: isSelected ? 600 : (depth === 0 ? 500 : 400),
+                                        color: 'inherit',
+                                    }}
+                                />
+                                {/* Tooltip added next to Dashboard */}
+                                {item.id === 'Dashboard' && (
+                                    <Tooltip
+                                        title="CRM is split into core business areas: Value Creation, Market, Sell, Delivery, Finance"
+                                        arrow
+                                        placement="right"
+                                    >
+                                        <InfoOutlinedIcon sx={{ fontSize: 16, ml: 1, cursor: 'help', opacity: 0.5, color: 'inherit' }} />
+                                    </Tooltip>
+                                )}
+                            </Box>
+                            {item.children && (isOpen ? <ExpandLess sx={{ fontSize: '1.2rem', color: 'inherit', opacity: 0.7 }} /> : <ExpandMore sx={{ fontSize: '1.2rem', color: 'inherit', opacity: 0.7 }} />)}
+                        </>
+                    )}
+                </ListItemButton>
+            </ListItem>
+                {
+            !isCollapsed && item.children && (
+                <Collapse in={isOpen} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                        {item.children.map(child => renderMenuItem(child, depth + 1, false))}
+                    </List>
+                </Collapse>
+            )
+        }
+            </React.Fragment >
+        );
+    };
+
+const drawer = (isCollapsed: boolean) => {
+    return (
+        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', bgcolor: '#f8f9fa' }}>
+            <Box
+                sx={{
+                    flex: 1,
+                    overflowY: 'auto',
+                    '&::-webkit-scrollbar': { display: 'none' },
+                    scrollbarWidth: 'none',
+                    msOverflowStyle: 'none',
+                }}
+            >
+                <List sx={{ mt: 2 }}>
+                    {menuItems.map(item => renderMenuItem(item, 0, isCollapsed))}
+                </List>
+            </Box>
+
+            <List sx={{ px: isCollapsed ? 1 : 2, pb: 2 }}>
+                <Divider sx={{ mb: 2 }} />
+                <ListItem disablePadding>
                     <ListItemButton
-                        onClick={() => {
-                            handleMenuClick(item.id, item.path);
-                            // If sidebar is collapsed, OPEN it when clicking an icon
-                            if (isCollapsed && item.children) {
-                                // Assuming handleDesktopDrawerToggle toggles logic.
-                                // We need to force OPEN.
-                                // But Layout uses `setDesktopOpen`.
-                                // I'll need to expose setDesktopOpen or check if desktopOpen is controlled.
-                                // Wait, `handleDesktopDrawerToggle` just toggles.
-                                // But I am inside `Layout`, so I can access `setDesktopOpen`.
-                                setDesktopOpen(true);
-                            }
-                        }}
+                        onClick={handleLogout}
                         sx={{
-                            minHeight: 48,
-                            justifyContent: isCollapsed ? 'center' : 'initial',
-                            px: 2.5,
-                            bgcolor: isSelected ? 'rgba(0, 0, 0, 0.04)' : 'transparent',
+                            borderRadius: 2,
+                            justifyContent: isCollapsed ? 'center' : 'flex-start',
                             '&:hover': {
-                                bgcolor: 'rgba(0, 0, 0, 0.04)',
+                                bgcolor: 'error.light',
+                                color: 'error.contrastText',
+                                '& .MuiListItemIcon-root': {
+                                    color: 'error.contrastText',
+                                },
                             },
                         }}
                     >
-                        {/* Icon: Show if item has one AND (menu is collapsed OR it's a child? No, user said headers).
-                            User: "when the menu bar is closed the icons appear, but when the menu is open = no icons gets to the headers?"
-                        */}
-                        {item.icon && isCollapsed && (
-                            <ListItemIcon sx={{ minWidth: 40, justifyContent: 'center', color: 'primary.main' }}>
-                                {item.icon}
-                            </ListItemIcon>
-                        )}
-
-                        {/* Text Only - Professional Look (Visible when open) */}
-                        {!isCollapsed && (
-                            <>
-                                <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
-                                    <ListItemText
-                                        primary={item.text}
-                                        primaryTypographyProps={{
-                                            fontSize: depth === 0 ? '0.9rem' : '0.85rem',
-                                            fontWeight: isSelected ? 600 : (depth === 0 ? 500 : 400),
-                                            color: 'inherit',
-                                        }}
-                                    />
-                                    {/* Tooltip added next to Dashboard */}
-                                    {item.id === 'Dashboard' && (
-                                        <Tooltip
-                                            title="CRM is split into core business areas: Value Creation, Market, Sell, Delivery, Finance"
-                                            arrow
-                                            placement="right"
-                                        >
-                                            <InfoOutlinedIcon sx={{ fontSize: 16, ml: 1, cursor: 'help', opacity: 0.5, color: 'inherit' }} />
-                                        </Tooltip>
-                                    )}
-                                </Box>
-                                {item.children && (isOpen ? <ExpandLess sx={{ fontSize: '1.2rem', color: 'inherit', opacity: 0.7 }} /> : <ExpandMore sx={{ fontSize: '1.2rem', color: 'inherit', opacity: 0.7 }} />)}
-                            </>
-                        )}
+                        <ListItemIcon sx={{ minWidth: isCollapsed ? 0 : 40, justifyContent: 'center' }}>
+                            <LogoutIcon />
+                        </ListItemIcon>
+                        {/* Text removed for icon-only look */}
                     </ListItemButton>
                 </ListItem>
-                {!isCollapsed && item.children && (
-                    <Collapse in={isOpen} timeout="auto" unmountOnExit>
-                        <List component="div" disablePadding>
-                            {item.children.map(child => renderMenuItem(child, depth + 1, false))}
-                        </List>
-                    </Collapse>
-                )}
-            </React.Fragment>
-        );
-    };
-
-    const drawer = (isCollapsed: boolean) => {
-        return (
-            <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', bgcolor: '#f8f9fa' }}>
-                <Box
-                    sx={{
-                        flex: 1,
-                        overflowY: 'auto',
-                        '&::-webkit-scrollbar': { display: 'none' },
-                        scrollbarWidth: 'none',
-                        msOverflowStyle: 'none',
-                    }}
-                >
-                    <List sx={{ mt: 2 }}>
-                        {menuItems.map(item => renderMenuItem(item, 0, isCollapsed))}
-                    </List>
-                </Box>
-
-                <List sx={{ px: isCollapsed ? 1 : 2, pb: 2 }}>
-                    <Divider sx={{ mb: 2 }} />
-                    <ListItem disablePadding>
-                        <ListItemButton
-                            onClick={handleLogout}
-                            sx={{
-                                borderRadius: 2,
-                                justifyContent: isCollapsed ? 'center' : 'flex-start',
-                                '&:hover': {
-                                    bgcolor: 'error.light',
-                                    color: 'error.contrastText',
-                                    '& .MuiListItemIcon-root': {
-                                        color: 'error.contrastText',
-                                    },
-                                },
-                            }}
-                        >
-                            <ListItemIcon sx={{ minWidth: isCollapsed ? 0 : 40, justifyContent: 'center' }}>
-                                <LogoutIcon />
-                            </ListItemIcon>
-                            {/* Text removed for icon-only look */}
-                        </ListItemButton>
-                    </ListItem>
-                </List>
-            </Box>
-        );
-    };
-
-    const currentDrawerWidth = desktopOpen ? drawerWidth : collapsedDrawerWidth;
-
-    return (
-        <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#fafbfc' }}>
-            {/* Top Navigation Bar */}
-            <AppBar
-                position="fixed"
-                elevation={0}
-                sx={{
-                    zIndex: (theme: any) => theme.zIndex.drawer + 1,
-                    bgcolor: 'white',
-                    borderBottom: '1px solid',
-                    borderColor: 'divider',
-                }}
-            >
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        edge="start"
-                        onClick={handleDrawerToggle}
-                        sx={{ mr: 2, display: { sm: 'none' }, color: 'text.primary' }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
-
-                    <IconButton
-                        color="inherit"
-                        edge="start"
-                        onClick={handleDesktopDrawerToggle}
-                        sx={{ mr: 2, display: { xs: 'none', sm: 'block' }, color: 'text.primary' }}
-                    >
-                        {desktopOpen ? <ChevronLeftIcon /> : <MenuIcon />}
-                    </IconButton>
-
-                    <Box
-                        component="img"
-                        src="/keystone-logo.png"
-                        alt="Keystone"
-                        sx={{
-                            height: 40,
-                            objectFit: 'contain',
-                            mr: 2,
-                        }}
-                        onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
-                            e.currentTarget.style.display = 'none';
-                        }}
-                    />
-
-                    <Box sx={{ flexGrow: 1 }} />
-
-                    {/* Logout Button in Top Right */}
-                    <IconButton
-                        onClick={handleLogout}
-                        color="primary"
-                        sx={{
-                            border: '1px solid',
-                            borderColor: 'divider',
-                            borderRadius: 2,
-                            p: 1
-                        }}
-                    >
-                        <LogoutIcon fontSize="small" />
-                    </IconButton>
-                </Toolbar>
-            </AppBar>
-
-            {/* Sidebar */}
-            <Box
-                component="nav"
-                sx={{ width: { sm: currentDrawerWidth }, flexShrink: { sm: 0 } }}
-            >
-                <Drawer
-                    variant="temporary"
-                    open={mobileOpen}
-                    onClose={handleDrawerToggle}
-                    ModalProps={{ keepMounted: true }}
-                    sx={{
-                        display: { xs: 'block', sm: 'none' },
-                        '& .MuiDrawer-paper': {
-                            boxSizing: 'border-box',
-                            width: drawerWidth,
-                            border: 'none',
-                            mt: '64px',
-                        },
-                    }}
-                >
-                    {drawer(false)}
-                </Drawer>
-                <Drawer
-                    variant="permanent"
-                    sx={{
-                        display: { xs: 'none', sm: 'block' },
-                        '& .MuiDrawer-paper': {
-                            boxSizing: 'border-box',
-                            width: currentDrawerWidth,
-                            border: 'none',
-                            borderRight: '1px solid',
-                            borderColor: 'divider',
-                            mt: '64px',
-                            transition: 'width 0.3s ease',
-                            overflowX: 'hidden',
-                        },
-                    }}
-                    open
-                >
-                    {drawer(!desktopOpen)}
-                </Drawer>
-            </Box>
-
-            {/* Main Content */}
-            <Box
-                component="main"
-                sx={{
-                    flexGrow: 1,
-                    width: { sm: `calc(100% - ${currentDrawerWidth}px)` },
-                    minHeight: '100vh',
-                    mt: '64px',
-                    transition: 'width 0.3s ease',
-                }}
-            >
-                <Box sx={{ p: 4 }}>
-                    {children}
-                </Box>
-            </Box>
+            </List>
         </Box>
     );
+};
+
+const currentDrawerWidth = desktopOpen ? drawerWidth : collapsedDrawerWidth;
+
+return (
+    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#fafbfc' }}>
+        {/* Top Navigation Bar */}
+        <AppBar
+            position="fixed"
+            elevation={0}
+            sx={{
+                zIndex: (theme: any) => theme.zIndex.drawer + 1,
+                bgcolor: 'white',
+                borderBottom: '1px solid',
+                borderColor: 'divider',
+            }}
+        >
+            <Toolbar>
+                <IconButton
+                    color="inherit"
+                    edge="start"
+                    onClick={handleDrawerToggle}
+                    sx={{ mr: 2, display: { sm: 'none' }, color: 'text.primary' }}
+                >
+                    <MenuIcon />
+                </IconButton>
+
+                <IconButton
+                    color="inherit"
+                    edge="start"
+                    onClick={handleDesktopDrawerToggle}
+                    sx={{ mr: 2, display: { xs: 'none', sm: 'block' }, color: 'text.primary' }}
+                >
+                    {desktopOpen ? <ChevronLeftIcon /> : <MenuIcon />}
+                </IconButton>
+
+                <Box
+                    component="img"
+                    src="/keystone-logo.png"
+                    alt="Keystone"
+                    sx={{
+                        height: 40,
+                        objectFit: 'contain',
+                        mr: 2,
+                    }}
+                    onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
+                        e.currentTarget.style.display = 'none';
+                    }}
+                />
+
+                <Box sx={{ flexGrow: 1 }} />
+
+                {/* Logout Button in Top Right */}
+                <IconButton
+                    onClick={handleLogout}
+                    color="primary"
+                    sx={{
+                        border: '1px solid',
+                        borderColor: 'divider',
+                        borderRadius: 2,
+                        p: 1
+                    }}
+                >
+                    <LogoutIcon fontSize="small" />
+                </IconButton>
+            </Toolbar>
+        </AppBar>
+
+        {/* Sidebar */}
+        <Box
+            component="nav"
+            sx={{ width: { sm: currentDrawerWidth }, flexShrink: { sm: 0 } }}
+        >
+            <Drawer
+                variant="temporary"
+                open={mobileOpen}
+                onClose={handleDrawerToggle}
+                ModalProps={{ keepMounted: true }}
+                sx={{
+                    display: { xs: 'block', sm: 'none' },
+                    '& .MuiDrawer-paper': {
+                        boxSizing: 'border-box',
+                        width: drawerWidth,
+                        border: 'none',
+                        mt: '64px',
+                    },
+                }}
+            >
+                {drawer(false)}
+            </Drawer>
+            <Drawer
+                variant="permanent"
+                sx={{
+                    display: { xs: 'none', sm: 'block' },
+                    '& .MuiDrawer-paper': {
+                        boxSizing: 'border-box',
+                        width: currentDrawerWidth,
+                        border: 'none',
+                        borderRight: '1px solid',
+                        borderColor: 'divider',
+                        mt: '64px',
+                        transition: 'width 0.3s ease',
+                        overflowX: 'hidden',
+                    },
+                }}
+                open
+            >
+                {drawer(!desktopOpen)}
+            </Drawer>
+        </Box>
+
+        {/* Main Content */}
+        <Box
+            component="main"
+            sx={{
+                flexGrow: 1,
+                width: { sm: `calc(100% - ${currentDrawerWidth}px)` },
+                minHeight: '100vh',
+                mt: '64px',
+                transition: 'width 0.3s ease',
+            }}
+        >
+            <Box sx={{ p: 4 }}>
+                {children}
+            </Box>
+        </Box>
+    </Box>
+);
 };
 
 export default Layout;
