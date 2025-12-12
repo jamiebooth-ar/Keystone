@@ -11,3 +11,8 @@ pandas==2.2.0
 python-multipart==0.0.6
 hubspot-api-client==8.0.0
 email-validator
+
+# AI / Database
+openai==1.61.0
+pyodbc==5.1.0
+aioodbc==0.3.3

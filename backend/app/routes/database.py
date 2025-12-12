@@ -3,6 +3,9 @@ from pydantic import BaseModel
 from typing import List, Dict, Any
 import logging
 
+from app.services.database_agent import db_agent
+from typing import Optional
+
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
@@ -13,6 +16,7 @@ class DatabaseQueryResponse(BaseModel):
     results: List[Dict[str, Any]]
     query: str
     row_count: int
+    answer: Optional[str] = None
 
 @router.post("/query", response_model=DatabaseQueryResponse)
 async def query_database(query_request: DatabaseQuery):
@@ -30,31 +34,20 @@ async def query_database(query_request: DatabaseQuery):
     - WYSIWYG: Data Source=134.213.185.96;Initial Catalog=WYSIWYG;user=scireg_ourcms;password=izjQL93FpG;MultipleActiveResultSets=True;
     """
     try:
-        query = query_request.query.lower().strip()
+        query = query_request.query.strip()
         
-        # TODO: Implement actual database query logic
-        # For now, return placeholder response
-        logger.info(f"Received database query: {query}")
+        # Use the DB Agent to process the query
+        result = db_agent.process_query(query)
         
-        # Example: Check if query is asking for university data
-        if "university" in query or any(uni_name in query for uni_name in ["oxford", "cambridge", "harvard"]):
-            return DatabaseQueryResponse(
-                results=[
-                    {
-                        "message": f"Searching for: {query_request.query}",
-                        "note": "Database integration coming soon. Will query CMS and WYSIWYG databases.",
-                        "databases": ["fau-cms", "WYSIWYG"],
-                        "status": "pending_implementation"
-                    }
-                ],
-                query=query_request.query,
-                row_count=0
-            )
-        
+        # Check for agent-level errors
+        if "error" in result and not result.get("answer"):
+             raise HTTPException(status_code=500, detail=result["error"])
+
         return DatabaseQueryResponse(
-            results=[{"message": "Query received", "status": "placeholder"}],
-            query=query_request.query,
-           row_count=0
+            results=result.get("results", []),
+            query=query,
+            row_count=len(result.get("results", [])),
+            answer=result.get("answer")
         )
         
     except Exception as e:
