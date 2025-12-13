@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import api from '../api';
 import {
     Dialog,
     DialogTitle,
@@ -28,38 +29,48 @@ interface DatabaseQueryAgentProps {
 }
 
 const DatabaseQueryAgent: React.FC<DatabaseQueryAgentProps> = ({ open, onClose }) => {
+    const initialMessage: Message = {
+        role: 'assistant',
+        content: 'Hello! I can scan the FAU database estate to find answers to your questions. If you\'d like stats for a specific university across all our products, just enter the university name. Please be patient as the databases are large.'
+    };
+
     const [query, setQuery] = useState('');
-    const [messages, setMessages] = useState<Message[]>([
-        {
-            role: 'assistant',
-            content: 'Hello! I can scan the FAU database estate to find answers to your questions. If you\'d like stats for a specific university across all our products, just enter the university name. Please be patient as the databases are large.'
-        }
-    ]);
+    const [messages, setMessages] = useState<Message[]>([initialMessage]);
     const [loading, setLoading] = useState(false);
+
+    // Reset chat when dialog opens/closes
+    React.useEffect(() => {
+        if (!open) {
+            setMessages([initialMessage]);
+            setQuery('');
+            setLoading(false);
+        }
+    }, [open]);
 
     const handleSendQuery = async () => {
         if (!query.trim()) return;
 
-        const userMessage: Message = { role: 'user', content: query };
+        const currentQuery = query;
+        const userMessage: Message = { role: 'user', content: currentQuery };
         setMessages(prev => [...prev, userMessage]);
         setQuery('');
         setLoading(true);
 
         try {
-            // TODO: Call backend endpoint for database query
-            // const response = await api.post('/database/query', { query });
-
-            // Placeholder response
-            setTimeout(() => {
-                const assistantMessage: Message = {
-                    role: 'assistant',
-                    content: `Searching FAU databases for: "${query}"...\n\n[This will connect to your CMS and WYSIWYG databases to retrieve real data]`
-                };
-                setMessages(prev => [...prev, assistantMessage]);
-                setLoading(false);
-            }, 1500);
+            const response = await api.post('/database/query', { query: currentQuery });
+            const assistantMessage: Message = {
+                role: 'assistant',
+                content: response.data.answer || "I found some data but couldn't summarize it."
+            };
+            setMessages(prev => [...prev, assistantMessage]);
         } catch (error) {
             console.error('Error querying database:', error);
+            const errorMessage: Message = {
+                role: 'assistant',
+                content: "I'm sorry, I encountered an error while querying the database. Please try again."
+            };
+            setMessages(prev => [...prev, errorMessage]);
+        } finally {
             setLoading(false);
         }
     };

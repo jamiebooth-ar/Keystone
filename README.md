@@ -36,10 +36,11 @@ cd Keystone
 ```
 
 2. **Configure environment**
-Create a `.env` file with your Meta API credentials:
+Run the setup script to interactively configure your environment:
+```bash
+python3 setup_env.py
 ```
-META_ACCESS_TOKEN=your_token_here
-```
+This will create a `.env` file for you and ask for necessary tokens (Meta, HubSpot, etc.).
 
 3. **Start the application**
 ```bash

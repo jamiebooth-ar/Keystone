@@ -258,29 +258,29 @@ const Orders: React.FC = () => {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell sx={{ fontWeight: 600 }}>Deal Name</TableCell>
+                            <TableCell sx={{ fontWeight: 600, whiteSpace: 'nowrap' }}>Deal Name</TableCell>
                             <TableCell
-                                sx={{ cursor: 'pointer', fontWeight: 600 }}
+                                sx={{ cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap' }}
                                 onClick={() => handleSort('created')}
                             >
                                 Created {sortBy === 'created' && (sortOrder === 'asc' ? '↑' : '↓')}
                             </TableCell>
                             <TableCell
                                 align="right"
-                                sx={{ cursor: 'pointer', fontWeight: 600 }}
+                                sx={{ cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap' }}
                                 onClick={() => handleSort('amount')}
                             >
                                 Amount {sortBy === 'amount' && (sortOrder === 'asc' ? '↑' : '↓')}
                             </TableCell>
                             <TableCell
-                                sx={{ cursor: 'pointer', fontWeight: 600 }}
+                                sx={{ cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap' }}
                                 onClick={() => handleSort('age')}
                             >
                                 Deal Age {sortBy === 'age' && (sortOrder === 'asc' ? '↑' : '↓')}
                             </TableCell>
-                            <TableCell sx={{ fontWeight: 600 }}>Days to Close</TableCell>
+                            <TableCell sx={{ fontWeight: 600, whiteSpace: 'nowrap' }}>Days to Close</TableCell>
                             <TableCell
-                                sx={{ cursor: 'pointer', fontWeight: 600 }}
+                                sx={{ cursor: 'pointer', fontWeight: 600, whiteSpace: 'nowrap' }}
                                 onClick={() => handleSort('closedate')}
                             >
                                 Close Date {sortBy === 'closedate' && (sortOrder === 'asc' ? '↑' : '↓')}

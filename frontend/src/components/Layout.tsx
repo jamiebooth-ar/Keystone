@@ -163,11 +163,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                             if (isCollapsed && item.children) {
                                 setDesktopOpen(true);
                             }
-                            // Navigate to first child if no direct path (and has children)
-                            if ((!item.path || item.path === '#') && item.children && item.children.length > 0) {
-                                const firstChild = item.children[0];
-                                if (firstChild.path) navigate(firstChild.path);
-                            }
+                            // Auto-navigation removed per user request (just expand/collapse)
                         }}
                         sx={{
                             minHeight: 48,

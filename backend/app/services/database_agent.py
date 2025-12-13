@@ -13,7 +13,17 @@ class DatabaseAgent:
     def __init__(self):
         # Configuration - Hardcoded for now as per user request/existing codebase references
         # Ideally these should move to .env in production
+        # Get base dir (3 levels up from this file)
+        # Get base dir (2 levels up from this file: app/services/ -> app/)
+        # Get base dir (3 levels up from this file: app/services/ -> app/ -> backend/)
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        banana_db_path = os.path.join(base_dir, 'keystone_banana.db')
+        
         self.databases: Dict[str, Dict[str, str]] = {
+            "banana": {
+                "connection_string": f"sqlite:///{banana_db_path}",
+                # SQLite doesn't need host/user/pass etc.
+            },
             "cms": {
                 "connection_string_template": "mssql+pyodbc://{user}:{password}@{host}/{db}?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes",
                 "host": "134.213.185.96",
@@ -41,7 +51,12 @@ class DatabaseAgent:
             if not config:
                 raise ValueError(f"Database configuration for '{db_key}' not found")
             
-            conn_str = config["connection_string_template"].format(**config)
+            # Check if direct connection string is provided (e.g. SQLite)
+            if "connection_string" in config:
+                conn_str = config["connection_string"]
+            else:
+                conn_str = config["connection_string_template"].format(**config)
+                
             self.engines[db_key] = create_engine(conn_str)
             logger.info(f"Initialized engine for {db_key}")
             
@@ -126,7 +141,7 @@ class DatabaseAgent:
         """
         # Step 1: Naive DB Selection - Default to CMS for now, or maybe try to detect?
         # TODO: Add logic to switch between 'cms' and 'wysiwyg' based on query
-        target_db = "cms" 
+        target_db = "banana" 
         
         # Step 2: Retrieve Schema
         relevant_tables = self._identify_relevant_tables(user_query, target_db)
@@ -134,11 +149,14 @@ class DatabaseAgent:
         
         # Step 3: Generate SQL
         system_prompt = f"""
-        You are a generic SQL expert for SQL Server.
+        You are a SQLite expert.
+        The underlying database is SQLite.
+        Do NOT use functions like YEAR(), CURDATE(), NOW(), or DATEADD().
+        Use SQLite date functions: date('now'), strftime('%Y', created_at), etc.
         Given the following database schema:
         {schema_details}
         
-        Write a valid SQL Server query to answer the user's question: "{user_query}"
+        Write a valid SQL query to answer the user's question: "{user_query}"
         Return ONLY the raw SQL query. Do not wrap in markdown or code blocks.
         """
         
